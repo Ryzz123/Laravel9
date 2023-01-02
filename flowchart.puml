@@ -1,0 +1,36 @@
+@startuml
+    skinparam backgroundColor #fff
+    skinparam activity {
+        StartColor lightblue
+        EndColor red
+        BackgroundColor lightblue
+        BorderColor black
+        ArrowColor red
+        FontColor black
+        StopColor lightblue
+    }
+
+    start
+    :Input a;
+    :Input b;
+    :Input operator (+,-,*,/,%,**,//);
+    if(operator is +) then (<i>bilangan ditambah)
+            :Hasil a + b;
+    elseif (operator is -) then (<i>bilangan dikurang)
+            :Hasil a - b;
+    elseif (operator is *) then (<i>bilangan dikali)
+            :Hasil a * b;
+    elseif (operator is /) then (<i>bilangan dibagi)
+            :Hasil a / b;
+    elseif (operator is %) then (<i>bilangan diambil sisa bagi)
+            :Hasil a % b;
+    elseif (operator is **) then (<i>bilangan dipangkatkan )
+            :Hasil a ** b;
+    elseif (operator is //) then (<i>bilangan diambil sisa bagi 2)
+            :Hasil a // b;
+    else (false)
+        :Error;
+    endif
+    :Output print Hasil;
+    stop
+@enduml
