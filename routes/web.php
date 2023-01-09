@@ -87,4 +87,21 @@ Route::get('/produk-redirect/{id}', function ($id) {
 });
 
 // menambahkan route di controller
+Route::get('/controller/hello/request',[\App\Http\Controllers\HelloController::class, 'request']);
 Route::get('/controller/hello/{name}',[\App\Http\Controllers\HelloController::class, 'hello']);
+
+// menambahkan request input
+Route::get('/input/hello', [\App\Http\Controllers\InputController::class, 'hello']);
+Route::post('/input/hello', [\App\Http\Controllers\InputController::class, 'hello']);
+
+// menambahkan nested input
+Route::post('/input/hello/first', [\App\Http\Controllers\InputController::class, 'helloFirstName']);
+
+// mengambil semua input
+Route::post('/input/hello/input', [\App\Http\Controllers\InputController::class, 'helloInput']);
+
+// mengambil array input
+Route::post('/input/hello/array', [\App\Http\Controllers\InputController::class, 'helloArray']);
+
+// menambah input type
+Route::post('/input/hello/type', [\App\Http\Controllers\InputController::class, 'inputType']);
