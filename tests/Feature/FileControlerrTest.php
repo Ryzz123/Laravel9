@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
-class FileControlerrTest extends TestCase
+class FileControllerTest extends TestCase
 {
     public function testUpload()
     {
