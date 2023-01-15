@@ -23,18 +23,18 @@ Route::get('/pzn', function () {
 });
 
 // redirect halaman dari halaman a ke halaman b
-Route::redirect('/youtube','/pzn');
+Route::redirect('/youtube', '/pzn');
 
 // menampilkan halaman 404 ke route yang tidak ada tujuan
 Route::fallback(function () {
-   return '404 by Febri Ananda Lubis';
+    return '404 by Febri Ananda Lubis';
 });
 
 // melakukan view melalui file blade
-Route::view('/hello', 'hello',['name' => 'Febri']);
+Route::view('/hello', 'hello', ['name' => 'Febri']);
 
 Route::get('hello-again', function () {
-    return view('hello',['name' => 'Febri']);
+    return view('hello', ['name' => 'Febri']);
 });
 
 // melakukan nested view
@@ -87,8 +87,8 @@ Route::get('/produk-redirect/{id}', function ($id) {
 });
 
 // menambahkan route di controller
-Route::get('/controller/hello/request',[\App\Http\Controllers\HelloController::class, 'request']);
-Route::get('/controller/hello/{name}',[\App\Http\Controllers\HelloController::class, 'hello']);
+Route::get('/controller/hello/request', [\App\Http\Controllers\HelloController::class, 'request']);
+Route::get('/controller/hello/{name}', [\App\Http\Controllers\HelloController::class, 'hello']);
 
 // menambahkan request input
 Route::get('/input/hello', [\App\Http\Controllers\InputController::class, 'hello']);
@@ -112,19 +112,72 @@ Route::post('/input/filter/except', [\App\Http\Controllers\InputController::clas
 Route::post('/input/filter/merge', [\App\Http\Controllers\InputController::class, 'filterMerge']);
 
 // File upload
-Route::post('/file/upload', [\App\Http\Controllers\FileController::class, 'upload']);
+Route::post('/file/upload', [\App\Http\Controllers\FileController::class, 'upload'])->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
 
 // Get Response
 Route::get('/response/hello', [\App\Http\Controllers\ResponseController::class, 'response']);
 Route::get('/response/header', [\App\Http\Controllers\ResponseController::class, 'header']);
 
 // Response type
-Route::get('/response/type/view', [\App\Http\Controllers\ResponseController::class, 'responseView']);
-Route::get('/response/type/json', [\App\Http\Controllers\ResponseController::class, 'responseJson']);
-Route::get('/response/type/file', [\App\Http\Controllers\ResponseController::class, 'responseFile']);
-Route::get('/response/type/download', [\App\Http\Controllers\ResponseController::class, 'responseDownload']);
+// Route group
+Route::prefix("/response/type")->group(function () {
+    Route::get('/view', [\App\Http\Controllers\ResponseController::class, 'responseView']);
+    Route::get('/json', [\App\Http\Controllers\ResponseController::class, 'responseJson']);
+    Route::get('/file', [\App\Http\Controllers\ResponseController::class, 'responseFile']);
+    Route::get('/download', [\App\Http\Controllers\ResponseController::class, 'responseDownload']);
+});
 
-// Cookie
-Route::get('/cookie/set',[\App\Http\Controllers\CookieController::class, 'createCookie']);
-Route::get('/cookie/get',[\App\Http\Controllers\CookieController::class, 'getCookie']);
-Route::get('/cookie/clear',[\App\Http\Controllers\CookieController::class, 'clearCookie']);
+// Route controller group
+Route::controller(\App\Http\Controllers\CookieController::class)->group(function () {
+    // Cookie
+    Route::get('/cookie/set', 'createCookie');
+    Route::get('/cookie/get', "getCookie");
+    Route::get('/cookie/clear', "clearCookie");
+});
+
+// Redirect
+Route::get("/redirect/from", [\App\Http\Controllers\RedirectController::class, 'redirectFrom']);
+Route::get("/redirect/to", [\App\Http\Controllers\RedirectController::class, 'redirectTo']);
+Route::get("/redirect/name", [\App\Http\Controllers\RedirectController::class, "redirectName"]);
+
+Route::get("/redirect/name/{name}", [\App\Http\Controllers\RedirectController::class, "redirectHello"])
+    ->name("redirect-hello");
+Route::get("/redirect/named", function () {
+    // return \route('redirect-hello', ["name" => "Febri"]);
+    // return url()->route('redirect-hello', ["name" => "Febri"]);
+    return \Illuminate\Support\Facades\URL::route('redirect-hello', ["name" => "Febri"]);
+});
+
+Route::get("/redirect/action", [\App\Http\Controllers\RedirectController::class, "redirectAction"]);
+Route::get("/redirect/away", [\App\Http\Controllers\RedirectController::class, "redirectAway"]);
+
+// Group midlleware
+Route::middleware(['contoh:RYZ,401'])->prefix("/middleware")->group(function () {
+    // Contoh menggunakan middleware
+    Route::get('/api', function () {
+        return "OK";
+    });
+    // Middleware Group
+    Route::get("/group", function () {
+        return "GROUP";
+    });
+});
+
+// csrf
+// url action
+Route::get('/url/action', function () {
+    // return action([\App\Http\Controllers\FormController::class, 'form'], []);
+    // return url()->action([\App\Http\Controllers\FormController::class, 'form'], []);
+    return \Illuminate\Support\Facades\URL::action([\App\Http\Controllers\FormController::class, 'form'], []);
+});
+Route::get('/form', [\App\Http\Controllers\FormController::class, 'form']);
+Route::post('/form', [\App\Http\Controllers\FormController::class, 'submitForm']);
+
+// Url Generation
+Route::get("/url/current", function () {
+    return \Illuminate\Support\Facades\URL::full();
+});
+
+// Membuat session
+Route::get("/session/create",[\App\Http\Controllers\SessionController::class, 'createSession']);
+Route::get("/session/get",[\App\Http\Controllers\SessionController::class, 'getSession']);
